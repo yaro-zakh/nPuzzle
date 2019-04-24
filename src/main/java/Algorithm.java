@@ -2,23 +2,10 @@ import java.util.*;
 
 
 class Algorithm {
-    PriorityQueue<AStarMatrix> openList;
-    List<AStarMatrix> closedList = new LinkedList<>() {
-        @Override
-        public boolean contains(Object o) {
-            AStarMatrix tmp = (AStarMatrix) o;
-            for (AStarMatrix element: this) {
-                if (Arrays.deepEquals(element.puzzle, tmp.puzzle)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    };
-    List<AStarMatrix> neighborhood = new LinkedList<>();
-    AStarMatrix current;
-    AStarMatrix goal;
-    Heuristic heuristic;
+    private PriorityQueue<AStarMatrix> openList;
+    private LinkedList<AStarMatrix> closedList = new LinkedList<>();
+    private AStarMatrix goal;
+    private Heuristic heuristic;
     private int[][] original;
     private int sizePuzzle;
 
@@ -41,34 +28,23 @@ class Algorithm {
         }
     }
 
-    void initOpenList() {
+    private void initOpenList() {
         Comparator<AStarMatrix> fStateComparator = Comparator.comparingInt(m -> m.f);
-        openList = new PriorityQueue<>(fStateComparator) {
-            @Override
-            public boolean contains(Object o) {
-                AStarMatrix tmp = (AStarMatrix) o;
-                for (AStarMatrix element: this) {
-                    if (Arrays.deepEquals(element.puzzle, tmp.puzzle)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
+        openList = new PriorityQueue<>(fStateComparator);
     }
 
     void findPath() {
         openList.add(new AStarMatrix(original));
 
         do {
-            current = openList.peek();
-            print2dArray(current.puzzle);
+            AStarMatrix current = openList.peek();
+            //print2dArray(current.puzzle);
             closedList.add(current);
             openList.remove();
             if (Arrays.deepEquals(current.puzzle, goal.puzzle)) {
                 break;
             }
-            neighborhood = findNeighborhood(current);
+            List<AStarMatrix> neighborhood = findNeighborhood(current);
             for (AStarMatrix aStarMatrix : neighborhood) {
                 if (closedList.contains(aStarMatrix)) {
                     continue;
@@ -82,11 +58,12 @@ class Algorithm {
                 }
             }
         } while (!openList.isEmpty());
+        print2dArray(closedList.getLast().puzzle);
     }
 
     private List<AStarMatrix> findNeighborhood(AStarMatrix current) {
         List<AStarMatrix> neighborhood = new LinkedList<>();
-        int iCurrent = 0, jCurrent = 0;
+        int iCurrent, jCurrent = 0;
         label: for (iCurrent = 0; iCurrent < sizePuzzle; iCurrent++) {
             for (jCurrent = 0; jCurrent < sizePuzzle; jCurrent++) {
                 if (current.puzzle[iCurrent][jCurrent] == 0) {
@@ -117,11 +94,11 @@ class Algorithm {
         return neighborhood;
     }
 
-    public boolean possiblePos(int x, int y) {
+    private boolean possiblePos(int x, int y) {
         return x < FileParser.sizePuzzle && x >= 0 && y < FileParser.sizePuzzle && y >= 0;
     }
 
-    public void print2dArray(int[][] array) {
+    private void print2dArray(int[][] array) {
         for (int i = 0; i < FileParser.sizePuzzle; i++) {
             for (int j = 0; j < FileParser.sizePuzzle; j++) {
                 System.out.printf("%3d",array[i][j]);

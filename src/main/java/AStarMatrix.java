@@ -1,9 +1,11 @@
+import java.util.Arrays;
+
 class AStarMatrix {
     int[][] puzzle;
     Integer f;
     int g;
     int h;
-    AStarMatrix parents;
+    private AStarMatrix parents;
 
     public AStarMatrix(int[][] puzzle) {
         this.puzzle = puzzle;
@@ -51,5 +53,20 @@ class AStarMatrix {
         tmp.puzzle[xOld][yOld] = this.puzzle[xNew][yNew];
         tmp.puzzle[xNew][yNew] = this.puzzle[xOld][yOld];
         return tmp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AStarMatrix that = (AStarMatrix) o;
+
+        return Arrays.deepEquals(puzzle, that.puzzle);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(puzzle);
     }
 }
