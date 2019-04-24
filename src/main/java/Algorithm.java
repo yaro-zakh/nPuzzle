@@ -59,12 +59,13 @@ class Algorithm {
 
     void findPath() {
         openList.add(new AStarMatrix(original));
+
         do {
             current = openList.peek();
             print2dArray(current.puzzle);
             closedList.add(current);
             openList.remove();
-            if (closedList.contains(goal)) {
+            if (Arrays.deepEquals(current.puzzle, goal.puzzle)) {
                 break;
             }
             neighborhood = findNeighborhood(current);
@@ -95,19 +96,23 @@ class Algorithm {
         }
         //swapUP
         if (possiblePos(iCurrent - 1, jCurrent)) {
-            neighborhood.add(current.swap(iCurrent, jCurrent, iCurrent - 1, jCurrent));
+            AStarMatrix tmp = new AStarMatrix(current.puzzle);
+            neighborhood.add(tmp.swap(iCurrent, jCurrent, iCurrent - 1, jCurrent));
         }
         //swapDown
         if (possiblePos(iCurrent + 1, jCurrent)) {
-            neighborhood.add(current.swap(iCurrent, jCurrent, iCurrent + 1, jCurrent));
+            AStarMatrix tmp = new AStarMatrix(current.puzzle);
+            neighborhood.add(tmp.swap(iCurrent, jCurrent, iCurrent + 1, jCurrent));
         }
         //swapRight
         if (possiblePos(iCurrent, jCurrent + 1)) {
-            neighborhood.add(current.swap(iCurrent, jCurrent, iCurrent, jCurrent + 1));
+            AStarMatrix tmp = new AStarMatrix(current.puzzle);
+            neighborhood.add(tmp.swap(iCurrent, jCurrent, iCurrent, jCurrent + 1));
         }
         //swapLeft
         if (possiblePos(iCurrent, jCurrent - 1)) {
-            neighborhood.add(current.swap(iCurrent, jCurrent, iCurrent, jCurrent - 1));
+            AStarMatrix tmp = new AStarMatrix(current.puzzle);
+            neighborhood.add(tmp.swap(iCurrent, jCurrent, iCurrent, jCurrent - 1));
         }
         return neighborhood;
     }

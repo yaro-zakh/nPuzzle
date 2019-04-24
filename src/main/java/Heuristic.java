@@ -8,6 +8,7 @@ public class Heuristic {
 
     public int manhattan(AStarMatrix origin) {
         Coordinate goal;
+        h = 0;
         for (int i = 0; i < FileParser.sizePuzzle; i++) {
             for (int j = 0; j < FileParser.sizePuzzle; j++) {
                 goal = findGoalCell(origin.puzzle[i][j]);
