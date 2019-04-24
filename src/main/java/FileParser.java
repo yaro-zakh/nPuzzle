@@ -2,10 +2,10 @@ import java.io.*;
 import java.util.LinkedHashSet;
 import java.util.regex.Pattern;
 
-class FileParser {
+public class FileParser {
     private FileInputStream file;
     private String stringFile = "";
-    private int sizePuzzle;
+    public static int sizePuzzle;
     private int cntPuzzleLine;
     private LinkedHashSet<Integer> puzzleCell = new LinkedHashSet<>();
 
@@ -35,7 +35,6 @@ class FileParser {
                 return false;
             }
         }
-        System.out.println(puzzleCell.size());
         return true;
     }
 
@@ -68,10 +67,6 @@ class FileParser {
             return false;
         }
         return true;
-    }
-
-    public int getSizePuzzle() {
-        return sizePuzzle;
     }
 
     public LinkedHashSet<Integer> getPuzzleCell() {

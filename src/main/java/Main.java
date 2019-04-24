@@ -11,8 +11,8 @@ public class Main {
             FileInputStream puzzleFile = new FileInputStream(args[0]);
             FileParser fileParser = new FileParser(puzzleFile);
             if (fileParser.correctFile()) {
-                System.out.println("File OK");
-                Algorithm start = new Algorithm(fileParser.getSizePuzzle(), fileParser.getPuzzleCell());
+                Algorithm start = new Algorithm(fileParser.getPuzzleCell());
+                start.findPath();
             }
         } catch (IOException e) {
             e.printStackTrace();
