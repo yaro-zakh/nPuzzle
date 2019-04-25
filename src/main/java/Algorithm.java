@@ -1,9 +1,10 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 
 class Algorithm {
     private PriorityQueue<AStarMatrix> openList;
-    private LinkedList<AStarMatrix> closedList = new LinkedList<>();
+    private HashSet<AStarMatrix> closedList = new LinkedHashSet<>();
     private AStarMatrix goal;
     private Heuristic heuristic;
     private int[][] original;
@@ -14,6 +15,10 @@ class Algorithm {
         goal = new AStarMatrix(GoalPuzzle.getInstance().initPuzzle(sizePuzzle, sizePuzzle));
         heuristic = new Heuristic(goal);
         initCurrentPuzzle(inputPuzzle);
+        if (!FileParser.solvable(original)) {
+            System.out.println("This puzzle is unsolvable");
+            System.exit(1);
+        }
         initOpenList();
     }
 
@@ -38,7 +43,8 @@ class Algorithm {
 
         do {
             AStarMatrix current = openList.peek();
-            //print2dArray(current.puzzle);
+            assert current != null;
+            print2dArray(current.puzzle);
             closedList.add(current);
             openList.remove();
             if (Arrays.deepEquals(current.puzzle, goal.puzzle)) {
@@ -51,14 +57,20 @@ class Algorithm {
                 }
                 if (!openList.contains(aStarMatrix)) {
                     aStarMatrix.g += 1;
-                    aStarMatrix.h = heuristic.manhattan(aStarMatrix);
+                    switch (FileParser.flag) {
+                        case 'm': aStarMatrix.h = heuristic.manhattan(aStarMatrix);
+                            break;
+                        case 'c': aStarMatrix.h = heuristic.chiponpos(aStarMatrix);
+                            break;
+                        case 'e': aStarMatrix.h = heuristic.eucldist(aStarMatrix);
+                            break;
+                    }
                     aStarMatrix.setF();
                     aStarMatrix.setParents(current);
                     openList.add(aStarMatrix);
                 }
             }
         } while (!openList.isEmpty());
-        print2dArray(closedList.getLast().puzzle);
     }
 
     private List<AStarMatrix> findNeighborhood(AStarMatrix current) {
@@ -73,23 +85,19 @@ class Algorithm {
         }
         //swapUP
         if (possiblePos(iCurrent - 1, jCurrent)) {
-            AStarMatrix tmp = new AStarMatrix(current.puzzle);
-            neighborhood.add(tmp.swap(iCurrent, jCurrent, iCurrent - 1, jCurrent));
+            neighborhood.add(current.swap(iCurrent, jCurrent, iCurrent - 1, jCurrent));
         }
         //swapDown
         if (possiblePos(iCurrent + 1, jCurrent)) {
-            AStarMatrix tmp = new AStarMatrix(current.puzzle);
-            neighborhood.add(tmp.swap(iCurrent, jCurrent, iCurrent + 1, jCurrent));
+            neighborhood.add(current.swap(iCurrent, jCurrent, iCurrent + 1, jCurrent));
         }
         //swapRight
         if (possiblePos(iCurrent, jCurrent + 1)) {
-            AStarMatrix tmp = new AStarMatrix(current.puzzle);
-            neighborhood.add(tmp.swap(iCurrent, jCurrent, iCurrent, jCurrent + 1));
+            neighborhood.add(current.swap(iCurrent, jCurrent, iCurrent, jCurrent + 1));
         }
         //swapLeft
         if (possiblePos(iCurrent, jCurrent - 1)) {
-            AStarMatrix tmp = new AStarMatrix(current.puzzle);
-            neighborhood.add(tmp.swap(iCurrent, jCurrent, iCurrent, jCurrent - 1));
+            neighborhood.add(current.swap(iCurrent, jCurrent, iCurrent, jCurrent - 1));
         }
         return neighborhood;
     }

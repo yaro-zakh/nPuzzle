@@ -18,6 +18,34 @@ public class Heuristic {
         return h;
     }
 
+    public int chiponpos(AStarMatrix origin) {
+        Coordinate goal;
+        Coordinate current;
+        h = 0;
+        for (int i = 0; i < FileParser.sizePuzzle; i++) {
+            for (int j = 0; j < FileParser.sizePuzzle; j++) {
+                goal = findGoalCell(origin.puzzle[i][j]);
+                current = new Coordinate(i, j);
+                if (!goal.equals(current)) {
+                    h++;
+                }
+            }
+        }
+        return h;
+    }
+
+    public int eucldist(AStarMatrix origin) {
+        Coordinate goal;
+        h = 0;
+        for (int i = 0; i < FileParser.sizePuzzle; i++) {
+            for (int j = 0; j < FileParser.sizePuzzle; j++) {
+                goal = findGoalCell(origin.puzzle[i][j]);
+                h += Math.sqrt(Math.pow(i - goal.x, 2) + Math.pow(j - goal.y, 2));
+            }
+        }
+        return h;
+    }
+
     public Coordinate findGoalCell(int value) {
         for (int i = 0; i < FileParser.sizePuzzle; i++) {
             for (int j = 0; j < FileParser.sizePuzzle; j++) {

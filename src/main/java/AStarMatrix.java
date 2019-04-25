@@ -5,7 +5,7 @@ class AStarMatrix {
     Integer f;
     int g;
     int h;
-    private AStarMatrix parents;
+    AStarMatrix parents;
 
     public AStarMatrix(int[][] puzzle) {
         this.puzzle = puzzle;

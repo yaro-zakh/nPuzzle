@@ -1,11 +1,15 @@
 import java.io.*;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class FileParser {
     private FileInputStream file;
     private String stringFile = "";
     public static int sizePuzzle;
+    public static char flag;
     private int cntPuzzleLine;
     private LinkedHashSet<Integer> puzzleCell = new LinkedHashSet<>();
 
@@ -36,6 +40,58 @@ public class FileParser {
             }
         }
         return true;
+    }
+
+    public static boolean solvable(int[][] puzzle) {
+        int sizeRow = FileParser.sizePuzzle;
+        int sizeColumn = FileParser.sizePuzzle;
+        int i, k = 0, l = 0, cnt = 0;
+        List<Integer> linePuzzle = new LinkedList<>();
+
+        while (k < sizeRow && l < sizeColumn) {
+            for (i = l; i < sizeColumn; ++i) linePuzzle.add(puzzle[k][i]);
+            k++;
+
+            for (i = k; i < sizeRow; ++i) linePuzzle.add(puzzle[i][sizeColumn - 1]);
+            sizeColumn--;
+
+            if ( k < sizeRow) {
+                for (i = sizeColumn-1; i >= l; --i) linePuzzle.add(puzzle[sizeRow - 1][i]);
+                sizeRow--;
+            }
+
+            if (l < sizeColumn) {
+                for (i = sizeRow-1; i >= k; --i) linePuzzle.add(puzzle[i][l]);
+                l++;
+            }
+        }
+        for (int element = 0; element < linePuzzle.size(); element++) {
+            if (element == linePuzzle.size() - 1) {
+                break;
+            }
+            for (int j = element + 1; j < linePuzzle.size(); j++) {
+                if (linePuzzle.get(element) > linePuzzle.get(j)) {
+                    cnt++;
+                }
+            }
+        }
+        cnt += linePuzzle.size() % 2 == 0 ? 1 : 0;
+        return cnt % 2 == 0;
+    }
+
+    void parseFlag(String[] args) {
+        label: for (String value: args) {
+            switch (value) {
+                case "-m": setFlag('m');
+                    break label;
+                case "-c": setFlag('c');
+                    break label;
+                case "-e": setFlag('e');
+                    break label;
+                default: setFlag('m');
+                    break;
+            }
+        }
     }
 
     private boolean correctionLine(String stringFile) {
@@ -71,5 +127,9 @@ public class FileParser {
 
     public LinkedHashSet<Integer> getPuzzleCell() {
         return puzzleCell;
+    }
+
+    public static void setFlag(char flag) {
+        FileParser.flag = flag;
     }
 }
