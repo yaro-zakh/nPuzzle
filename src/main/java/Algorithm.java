@@ -1,6 +1,4 @@
-import java.lang.reflect.Array;
 import java.util.*;
-
 
 class Algorithm {
     private PriorityQueue<AStarMatrix> openList;
@@ -39,6 +37,7 @@ class Algorithm {
     }
 
     void findPath() {
+        long startTime = System.nanoTime();
         openList.add(new AStarMatrix(original));
 
         do {
@@ -71,6 +70,10 @@ class Algorithm {
                 }
             }
         } while (!openList.isEmpty());
+
+        long endTime = System.nanoTime();
+        double elapsedTimeInSecond = (double) (endTime - startTime) / 1_000_000_000;
+        System.out.println(elapsedTimeInSecond + " seconds");
     }
 
     private List<AStarMatrix> findNeighborhood(AStarMatrix current) {
