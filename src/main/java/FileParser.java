@@ -10,6 +10,7 @@ public class FileParser {
     private String stringFile = "";
     public static int sizePuzzle;
     public static char flag;
+    public static char searchFlag;
     private int cntPuzzleLine;
     private LinkedHashSet<Integer> puzzleCell = new LinkedHashSet<>();
 
@@ -80,14 +81,18 @@ public class FileParser {
     }
 
     void parseFlag(String[] args) {
-        label: for (String value: args) {
+        for (String value: args) {
             switch (value) {
                 case "-m": setFlag('m');
-                    break label;
+                    break;
                 case "-c": setFlag('c');
-                    break label;
+                    break;
                 case "-e": setFlag('e');
-                    break label;
+                    break;
+                case "-g": setSearchFlag('g');
+                    break;
+                case "-u": setSearchFlag('u');
+                    break;
                 default: setFlag('m');
                     break;
             }
@@ -131,5 +136,9 @@ public class FileParser {
 
     public static void setFlag(char flag) {
         FileParser.flag = flag;
+    }
+
+    public static void setSearchFlag(char searchFlag) {
+        FileParser.searchFlag = searchFlag;
     }
 }
