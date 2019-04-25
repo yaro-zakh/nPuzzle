@@ -7,6 +7,7 @@ class Algorithm {
     private Heuristic heuristic;
     private int[][] original;
     private int sizePuzzle;
+    private int maxOpenList = 0;
 
     Algorithm(LinkedHashSet<Integer> inputPuzzle) {
         this.sizePuzzle = FileParser.sizePuzzle;
@@ -39,6 +40,7 @@ class Algorithm {
     void findPath() {
         long startTime = System.nanoTime();
         openList.add(new AStarMatrix(original));
+        maxOpenList = openList.size();
 
         do {
             AStarMatrix current = openList.peek();
@@ -51,10 +53,7 @@ class Algorithm {
             }
             List<AStarMatrix> neighborhood = findNeighborhood(current);
             for (AStarMatrix aStarMatrix : neighborhood) {
-                if (closedList.contains(aStarMatrix)) {
-                    continue;
-                }
-                if (!openList.contains(aStarMatrix)) {
+                if (!openList.contains(aStarMatrix) && !closedList.contains(aStarMatrix)) {
                     aStarMatrix.g += 1;
                     switch (FileParser.flag) {
                         case 'm': aStarMatrix.h = heuristic.manhattan(aStarMatrix);
@@ -69,11 +68,13 @@ class Algorithm {
                     openList.add(aStarMatrix);
                 }
             }
+            if (openList.size() > maxOpenList) {
+                maxOpenList = openList.size();
+            }
         } while (!openList.isEmpty());
 
         long endTime = System.nanoTime();
-        double elapsedTimeInSecond = (double) (endTime - startTime) / 1_000_000_000;
-        System.out.println(elapsedTimeInSecond + " seconds");
+        printFinalInfo((double) (endTime - startTime) / 1_000_000_000);
     }
 
     private List<AStarMatrix> findNeighborhood(AStarMatrix current) {
@@ -117,5 +118,11 @@ class Algorithm {
             System.out.println();
         }
         System.out.println();
+    }
+
+    private void printFinalInfo(double elapsedTimeInSecond) {
+        System.out.println("Running time: " + elapsedTimeInSecond + " seconds");
+        System.out.println("Maximum number of states in memory: " + maxOpenList);
+        System.out.println("Total number of states: " + closedList.size());
     }
 }
